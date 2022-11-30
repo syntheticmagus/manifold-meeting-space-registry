@@ -29,7 +29,7 @@ app.get("/debug", function (request, response) {
 
 app.post("/join", function (request, response) {
     const space = request.body.space;
-    const peerId = request.body.peerId;
+    const peerId = request.body.id;
 
     if (!spaceToPeerIds.has(space)) {
         spaceToPeerIds.set(space, new Set());
@@ -38,24 +38,17 @@ app.post("/join", function (request, response) {
     const peerIds = spaceToPeerIds.get(space);
     peerIds.add(peerId);
 
-    response.status(200).send();
-});
-
-app.get("/members", function (request, response) {
-    const space = request.body.space;
-
-    const peerIds = spaceToPeerIds.get(space);
     const current = [];
     peerIds.forEach((peerId) => {
-        current.add(peerId);
+        current.push(peerId);
     });
 
-    response.status(200).send(JSON.stringify({ peerIds: current }));
+    response.status(200).send(JSON.stringify({ ids: current }));
 });
 
 app.post("/leave", function (request, response) {
     const space = request.body.space;
-    const peerId = request.body.peerId;
+    const peerId = request.body.id;
 
     if (spaceToPeerIds.has(space)) {
         spaceToPeerIds.get(space).delete(peerId);
